@@ -14,7 +14,7 @@
 #![no_std]
 
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, token, Address, Env,
+    contract, contracterror, contractimpl, contracttype, token, Address, Env,
     String, Vec,
 };
 
@@ -69,42 +69,6 @@ pub enum BoardError {
     InvalidState = 4,
     Unauthorized = 5,
     InvalidReward = 6,
-}
-
-#[contractevent(topics = ["bounty", "posted"])]
-pub struct BountyPostedEvent {
-    #[topic]
-    pub bounty_id: u32,
-    pub sponsor: Address,
-    pub reward: i128,
-}
-
-#[contractevent(topics = ["bounty", "submitted"])]
-pub struct SubmissionMadeEvent {
-    #[topic]
-    pub bounty_id: u32,
-    pub contributor: Address,
-}
-
-#[contractevent(topics = ["bounty", "disputed"])]
-pub struct BountyDisputedEvent {
-    #[topic]
-    pub bounty_id: u32,
-    pub sponsor: Address,
-}
-
-#[contractevent(topics = ["bounty", "paid"])]
-pub struct BountyPaidEvent {
-    #[topic]
-    pub bounty_id: u32,
-    pub contributor: Address,
-    pub reward: i128,
-}
-
-#[contractevent(topics = ["bounty", "cancelled"])]
-pub struct BountyCancelledEvent {
-    #[topic]
-    pub bounty_id: u32,
 }
 
 #[contract]
@@ -182,12 +146,10 @@ impl BountyBoard {
             .instance()
             .set(&DataKey::BountyCount, &(id + 1));
 
-        BountyPostedEvent {
-            bounty_id: id,
-            sponsor,
-            reward,
-        }
-        .publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "posted"), id),
+            (sponsor, reward),
+        );
 
         Ok(id)
     }
@@ -214,11 +176,10 @@ impl BountyBoard {
             .persistent()
             .set(&DataKey::Bounty(bounty_id), &bounty);
 
-        SubmissionMadeEvent {
-            bounty_id,
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "submitted"), bounty_id),
             contributor,
-        }
-        .publish(&env);
+        );
 
         Ok(())
     }
@@ -269,12 +230,10 @@ impl BountyBoard {
             .persistent()
             .set(&DataKey::Bounty(bounty_id), &bounty);
 
-        BountyPaidEvent {
-            bounty_id,
-            contributor,
-            reward: bounty.reward,
-        }
-        .publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "paid"), bounty_id),
+            (contributor, bounty.reward),
+        );
 
         Ok(())
     }
@@ -303,7 +262,10 @@ impl BountyBoard {
             .persistent()
             .set(&DataKey::Bounty(bounty_id), &bounty);
 
-        BountyDisputedEvent { bounty_id, sponsor }.publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "disputed"), bounty_id),
+            sponsor,
+        );
         Ok(())
     }
 
@@ -346,7 +308,10 @@ impl BountyBoard {
             .persistent()
             .set(&DataKey::Bounty(bounty_id), &bounty);
 
-        BountyCancelledEvent { bounty_id }.publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "cancelled"), bounty_id),
+            (),
+        );
         Ok(())
     }
 
@@ -379,7 +344,10 @@ impl BountyBoard {
             .persistent()
             .set(&DataKey::Bounty(bounty_id), &bounty);
 
-        BountyCancelledEvent { bounty_id }.publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "bounty"), soroban_sdk::Symbol::new(&env, "cancelled"), bounty_id),
+            (),
+        );
         Ok(())
     }
 

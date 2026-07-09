@@ -12,7 +12,7 @@
 #![no_std]
 
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, Address, Env, String,
+    contract, contracterror, contractimpl, contracttype, Address, Env, String,
 };
 
 #[contracttype]
@@ -40,28 +40,6 @@ pub enum RegistryError {
     AlreadyInitialized = 2,
     Unauthorized = 3,
     InvalidAmount = 4,
-}
-
-#[contractevent(topics = ["reputation", "bounty_completed"])]
-pub struct BountyCompletedEvent {
-    #[topic]
-    pub contributor: Address,
-    pub new_score: u32,
-    pub total_earned: i128,
-    pub completed_bounties: u32,
-}
-
-#[contractevent(topics = ["reputation", "dispute_recorded"])]
-pub struct DisputeRecordedEvent {
-    #[topic]
-    pub contributor: Address,
-    pub new_score: u32,
-}
-
-#[contractevent(topics = ["registry", "writer_authorized"])]
-pub struct WriterAuthorizedEvent {
-    #[topic]
-    pub writer: Address,
 }
 
 const STARTING_SCORE: u32 = 500;
@@ -99,7 +77,10 @@ impl ContributorRegistry {
             .instance()
             .set(&DataKey::AuthorizedWriter(writer.clone()), &true);
 
-        WriterAuthorizedEvent { writer }.publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "registry"), soroban_sdk::Symbol::new(&env, "writer_authorized")),
+            writer
+        );
         Ok(())
     }
 
@@ -128,13 +109,10 @@ impl ContributorRegistry {
             .persistent()
             .set(&DataKey::Stats(contributor.clone()), &stats);
 
-        BountyCompletedEvent {
-            contributor,
-            new_score: stats.reputation_score,
-            total_earned: stats.total_earned,
-            completed_bounties: stats.completed_bounties,
-        }
-        .publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "reputation"), soroban_sdk::Symbol::new(&env, "bounty_completed"), contributor),
+            (stats.reputation_score, stats.total_earned, stats.completed_bounties),
+        );
 
         Ok(stats)
     }
@@ -157,11 +135,10 @@ impl ContributorRegistry {
             .persistent()
             .set(&DataKey::Stats(contributor.clone()), &stats);
 
-        DisputeRecordedEvent {
-            contributor,
-            new_score: stats.reputation_score,
-        }
-        .publish(&env);
+        env.events().publish(
+            (soroban_sdk::Symbol::new(&env, "reputation"), soroban_sdk::Symbol::new(&env, "dispute_recorded"), contributor),
+            stats.reputation_score,
+        );
 
         Ok(stats)
     }
