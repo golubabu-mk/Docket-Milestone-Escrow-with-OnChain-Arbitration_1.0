@@ -6,8 +6,8 @@ The Bounty Board is a fully decentralized, production-ready freelance marketplac
 - **Live Platform**: [https://the-bounty-board.vercel.app/](https://the-bounty-board.vercel.app/)
 - **Demo Video**: [Watch the Demo on Google Drive](https://drive.google.com/file/d/1niMMGBu9r8U3spyEK3LtgUQoevmrQk_O/view?usp=sharing)
 - **Example Transaction Hash**: [`728b01227113e1f2a2668cc748b0fa320cda069fd7f59374f8d365140962219d`](https://stellar.expert/explorer/testnet/tx/728b01227113e1f2a2668cc748b0fa320cda069fd7f59374f8d365140962219d)
-- **Bounty Board Contract ID**: [`CDOAGSH5BJTEYRSSKCHKYL54QVU7G3TKLQZSB7LGC6KDZI4CMCPHAN6D`](https://stellar.expert/explorer/testnet/contract/CDOAGSH5BJTEYRSSKCHKYL54QVU7G3TKLQZSB7LGC6KDZI4CMCPHAN6D)
-- **Contributor Registry Contract ID**: [`CBOF33MHFOTV7SMHYOAQF4T47DVQ7FF32GUPKBXJ5HBFDTYCF6P2SCGJ`](https://stellar.expert/explorer/testnet/contract/CBOF33MHFOTV7SMHYOAQF4T47DVQ7FF32GUPKBXJ5HBFDTYCF6P2SCGJ)
+- **Bounty Board Contract ID**: `CDOAGSH5BJTEYRSSKCHKYL54QVU7G3TKLQZSB7LGC6KDZI4CMCPHAN6D`
+- **Contributor Registry Contract ID**: `CBOF33MHFOTV7SMHYOAQF4T47DVQ7FF32GUPKBXJ5HBFDTYCF6P2SCGJ`
 
 ## 🌟 Key Features
 
