@@ -35,11 +35,11 @@ fn setup<'a>() -> TestSetup<'a> {
     let (token_address, token_admin, token) = create_token_contract(&env, &admin);
     token_admin.mint(&sponsor, &1_000_000_i128);
 
-    let registry_id = env.register(ContributorRegistry, ());
+    let registry_id = env.register_contract(None, ContributorRegistry);
     let registry = contributor_registry::ContributorRegistryClient::new(&env, &registry_id);
     registry.initialize(&admin);
 
-    let board_id = env.register(BountyBoard, ());
+    let board_id = env.register_contract(None, BountyBoard);
     let board = BountyBoardClient::new(&env, &board_id);
     board.initialize(&admin, &token_address, &registry_id);
 

@@ -9,7 +9,7 @@ fn setup() -> (Env, ContributorRegistryClient<'static>, Address, Address) {
     env.mock_all_auths();
 
     let admin = Address::generate(&env);
-    let contract_id = env.register(ContributorRegistry, ());
+    let contract_id = env.register_contract(None, ContributorRegistry);
     let client = ContributorRegistryClient::new(&env, &contract_id);
 
     client.initialize(&admin);
