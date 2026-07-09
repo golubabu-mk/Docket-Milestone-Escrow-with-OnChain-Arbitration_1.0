@@ -32,7 +32,7 @@ jobs:
       - name: Install Stellar CLI
         run: |
           if ! command -v stellar &> /dev/null; then
-            cargo install --locked stellar-cli --features opt
+            cargo install --locked stellar-cli
           else
             echo "Stellar CLI already installed from cache"
           fi
