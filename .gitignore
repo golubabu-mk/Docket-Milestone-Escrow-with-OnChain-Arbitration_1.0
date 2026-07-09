@@ -1,0 +1,18 @@
+# Rust
+/target/
+Cargo.lock.bak
+**/*.rs.bk
+
+# Node / Next.js
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env.local
+frontend/.env*.local
+frontend/next-env.d.ts
+
+# Misc
+.DS_Store
+*.log
+.vercel
