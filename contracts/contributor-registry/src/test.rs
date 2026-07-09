@@ -107,12 +107,18 @@ fn test_score_never_exceeds_max() {
 fn test_tier_labels_reflect_score_bands() {
     let (env, client, _admin, writer) = setup();
     let newbie = Address::generate(&env);
-    assert_eq!(client.tier_label(&newbie), String::from_str(&env, "Trusted"));
+    assert_eq!(
+        client.tier_label(&newbie),
+        String::from_str(&env, "Trusted")
+    );
 
     let veteran = Address::generate(&env);
     for _ in 0..10 {
         client.record_completion(&writer, &veteran, &10_i128);
     }
     // 500 + 150 = 650 -> Veteran
-    assert_eq!(client.tier_label(&veteran), String::from_str(&env, "Veteran"));
+    assert_eq!(
+        client.tier_label(&veteran),
+        String::from_str(&env, "Veteran")
+    );
 }

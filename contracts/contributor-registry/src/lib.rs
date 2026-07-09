@@ -11,9 +11,7 @@
 
 #![no_std]
 
-use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, Address, Env, String,
-};
+use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, Env, String};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -78,8 +76,11 @@ impl ContributorRegistry {
             .set(&DataKey::AuthorizedWriter(writer.clone()), &true);
 
         env.events().publish(
-            (soroban_sdk::Symbol::new(&env, "registry"), soroban_sdk::Symbol::new(&env, "writer_authorized")),
-            writer
+            (
+                soroban_sdk::Symbol::new(&env, "registry"),
+                soroban_sdk::Symbol::new(&env, "writer_authorized"),
+            ),
+            writer,
         );
         Ok(())
     }
@@ -110,8 +111,16 @@ impl ContributorRegistry {
             .set(&DataKey::Stats(contributor.clone()), &stats);
 
         env.events().publish(
-            (soroban_sdk::Symbol::new(&env, "reputation"), soroban_sdk::Symbol::new(&env, "bounty_completed"), contributor),
-            (stats.reputation_score, stats.total_earned, stats.completed_bounties),
+            (
+                soroban_sdk::Symbol::new(&env, "reputation"),
+                soroban_sdk::Symbol::new(&env, "bounty_completed"),
+                contributor,
+            ),
+            (
+                stats.reputation_score,
+                stats.total_earned,
+                stats.completed_bounties,
+            ),
         );
 
         Ok(stats)
@@ -136,7 +145,11 @@ impl ContributorRegistry {
             .set(&DataKey::Stats(contributor.clone()), &stats);
 
         env.events().publish(
-            (soroban_sdk::Symbol::new(&env, "reputation"), soroban_sdk::Symbol::new(&env, "dispute_recorded"), contributor),
+            (
+                soroban_sdk::Symbol::new(&env, "reputation"),
+                soroban_sdk::Symbol::new(&env, "dispute_recorded"),
+                contributor,
+            ),
             stats.reputation_score,
         );
 
