@@ -3,7 +3,7 @@
 Docket is a decentralized, trustless milestone escrow platform built on Stellar (Soroban). It provides secure smart contract escrows where a client can fund a freelance job upfront, and funds are released milestone-by-milestone as work is completed. It features inter-contract communication with an on-chain Arbiter for decentralized dispute resolution.
 
 ## 🔗 Live Demo & Video Pitch
-- **Live Platform**: [docket-milestone-escrow-with-on-cha.vercel.app](https://docket-milestone-escrow-with-on-cha.vercel.app/)
+- **Live Platform**: [docket-milestone-escrow-with-on-cha-eosin.vercel.app](https://docket-milestone-escrow-with-on-cha-eosin.vercel.app/)
 - **Demo Video**: [Watch the Demo on Google Drive](https://drive.google.com/file/d/1QTH3n2-JTp9kB4W7z0aWIxKFvTAEisgN/view?usp=sharing)
 
 ## 📜 Smart Contract Deployments (Testnet)
