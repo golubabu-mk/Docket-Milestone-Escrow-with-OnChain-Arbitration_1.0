@@ -319,7 +319,10 @@ function mapRawBounty(raw: any): Bounty {
 
 function mapStatus(raw: unknown): Bounty["status"] {
   if (typeof raw === "string") return raw as Bounty["status"];
-  if (raw && typeof raw === "object") {
+  if (Array.isArray(raw) && raw.length > 0 && typeof raw[0] === "string") {
+    return raw[0] as Bounty["status"];
+  }
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
     const key = Object.keys(raw as object)[0];
     return (key as Bounty["status"]) ?? "Open";
   }
