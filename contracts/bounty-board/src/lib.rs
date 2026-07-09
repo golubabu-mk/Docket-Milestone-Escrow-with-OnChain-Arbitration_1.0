@@ -22,7 +22,7 @@ mod registry {
     // exported interface. This is how BountyBoard talks to the other
     // contract on-chain.
     soroban_sdk::contractimport!(
-        file = "../../target/wasm32-unknown-unknown/release/contributor_registry.wasm"
+        file = "../../target/wasm32v1-none/release/contributor_registry.wasm"
     );
 }
 

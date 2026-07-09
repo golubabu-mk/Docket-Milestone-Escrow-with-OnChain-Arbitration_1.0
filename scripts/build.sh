@@ -16,8 +16,8 @@ cd ../..
 
 echo "==> Optimizing WASM"
 stellar contract optimize \
-  --wasm target/wasm32-unknown-unknown/release/contributor_registry.wasm
+  --wasm target/wasm32v1-none/release/contributor_registry.wasm
 stellar contract optimize \
-  --wasm target/wasm32-unknown-unknown/release/bounty_board.wasm
+  --wasm target/wasm32v1-none/release/bounty_board.wasm
 
-echo "Build complete. Artifacts in target/wasm32-unknown-unknown/release/"
+echo "Build complete. Artifacts in target/wasm32v1-none/release/"

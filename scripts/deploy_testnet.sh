@@ -17,14 +17,14 @@ PASSPHRASE="Test SDF Network ; September 2015"
 
 echo "==> Deploying ContributorRegistry"
 REGISTRY_ID=$(stellar contract deploy \
-  --wasm target/wasm32-unknown-unknown/release/contributor_registry.optimized.wasm \
+  --wasm target/wasm32v1-none/release/contributor_registry.optimized.wasm \
   --source "$DEPLOYER" \
   --network "$NETWORK")
 echo "ContributorRegistry deployed at: $REGISTRY_ID"
 
 echo "==> Deploying BountyBoard"
 BOARD_ID=$(stellar contract deploy \
-  --wasm target/wasm32-unknown-unknown/release/bounty_board.optimized.wasm \
+  --wasm target/wasm32v1-none/release/bounty_board.optimized.wasm \
   --source "$DEPLOYER" \
   --network "$NETWORK")
 echo "BountyBoard deployed at: $BOARD_ID"

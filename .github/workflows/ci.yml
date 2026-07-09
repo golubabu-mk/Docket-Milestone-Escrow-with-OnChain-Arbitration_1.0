@@ -16,7 +16,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          targets: wasm32v1-none
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -31,11 +31,11 @@ jobs:
 
       - name: Build contributor-registry (wasm)
         working-directory: contracts/contributor-registry
-        run: cargo build --target wasm32-unknown-unknown --release
+        run: cargo build --target wasm32v1-none --release
 
       - name: Build bounty-board (wasm)
         working-directory: contracts/bounty-board
-        run: cargo build --target wasm32-unknown-unknown --release
+        run: cargo build --target wasm32v1-none --release
 
       - name: Run contract test suite
         run: cargo test --workspace --verbose
