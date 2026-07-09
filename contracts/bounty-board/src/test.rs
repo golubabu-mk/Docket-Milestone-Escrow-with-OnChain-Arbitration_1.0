@@ -21,6 +21,7 @@ struct TestSetup<'a> {
     board: BountyBoardClient<'a>,
     registry: contributor_registry::ContributorRegistryClient<'a>,
     token: token::Client<'a>,
+    #[allow(dead_code)]
     token_admin: token::StellarAssetClient<'a>,
     sponsor: Address,
 }
@@ -52,7 +53,7 @@ fn setup<'a>() -> TestSetup<'a> {
         board,
         registry,
         token,
-        token_admin: token_admin,
+        token_admin,
         sponsor,
     }
 }
