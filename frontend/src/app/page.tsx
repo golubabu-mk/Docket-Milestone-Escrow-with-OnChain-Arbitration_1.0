@@ -69,6 +69,7 @@ export default function HomePage() {
         txHash,
       });
       refresh();
+      wallet.refreshBalance();
     } catch (err) {
       addToast({
         type: "error",
@@ -93,6 +94,7 @@ export default function HomePage() {
         txHash,
       });
       refresh();
+      wallet.refreshBalance();
     } catch (err) {
       addToast({
         type: "error",
@@ -123,6 +125,7 @@ export default function HomePage() {
         txHash,
       });
       refresh();
+      wallet.refreshBalance();
     } catch (err) {
       addToast({
         type: "error",
@@ -148,6 +151,7 @@ export default function HomePage() {
         txHash,
       });
       refresh();
+      wallet.refreshBalance();
     } catch (err) {
       addToast({
         type: "error",
@@ -162,6 +166,7 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Header
         address={wallet.address}
+        balance={wallet.balance}
         isConnecting={wallet.isConnecting}
         onConnect={wallet.connect}
         onDisconnect={wallet.disconnect}
