@@ -15,7 +15,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          targets: wasm32-unknown-unknown, wasm32v1-none
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -25,7 +25,7 @@ jobs:
             ~/.cargo/git
             ~/.cargo/bin/stellar
             target
-          key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-stellar-v27
           restore-keys: |
             ${{ runner.os }}-cargo-stellar-
 
