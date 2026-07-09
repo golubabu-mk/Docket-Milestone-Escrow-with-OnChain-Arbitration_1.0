@@ -23,6 +23,7 @@ REGISTRY_ID=$(stellar contract deploy \
 echo "ContributorRegistry deployed at: $REGISTRY_ID"
 
 echo "==> Deploying BountyBoard"
+sleep 2
 BOARD_ID=$(stellar contract deploy \
   --wasm target/wasm32v1-none/release/bounty_board.optimized.wasm \
   --source "$DEPLOYER" \
@@ -32,6 +33,7 @@ echo "BountyBoard deployed at: $BOARD_ID"
 DEPLOYER_ADDRESS=$(stellar keys address "$DEPLOYER")
 
 echo "==> Initializing ContributorRegistry"
+sleep 2
 stellar contract invoke \
   --id "$REGISTRY_ID" \
   --source "$DEPLOYER" \
@@ -43,6 +45,7 @@ TOKEN_ID=$(stellar contract id asset --asset native --network "$NETWORK")
 echo "Native token contract: $TOKEN_ID"
 
 echo "==> Initializing BountyBoard"
+sleep 2
 stellar contract invoke \
   --id "$BOARD_ID" \
   --source "$DEPLOYER" \
@@ -53,6 +56,7 @@ stellar contract invoke \
   --registry_address "$REGISTRY_ID"
 
 echo "==> Authorizing BountyBoard as a trusted writer on the registry"
+sleep 2
 stellar contract invoke \
   --id "$REGISTRY_ID" \
   --source "$DEPLOYER" \
