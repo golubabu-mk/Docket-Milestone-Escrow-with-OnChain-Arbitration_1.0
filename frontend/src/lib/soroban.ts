@@ -1,6 +1,6 @@
 import {
   Contract,
-  SorobanRpc,
+  rpc,
   TransactionBuilder,
   BASE_FEE,
   nativeToScVal,
@@ -17,8 +17,8 @@ import {
 import { signTransactionXdr } from "./wallet";
 import { Bounty, ContributorStats, ContractCallError } from "./types";
 
-function getServer(): SorobanRpc.Server {
-  return new SorobanRpc.Server(RPC_URL, { allowHttp: RPC_URL.startsWith("http://") });
+function getServer(): rpc.Server {
+  return new rpc.Server(RPC_URL, { allowHttp: RPC_URL.startsWith("http://") });
 }
 
 /**
@@ -63,14 +63,14 @@ async function invokeContract(
     );
   }
 
-  if (SorobanRpc.Api.isSimulationError(simulated)) {
+  if (rpc.Api.isSimulationError(simulated)) {
     throw new ContractCallError(
       readableSimulationError(simulated.error, method),
       simulated.error
     );
   }
 
-  const prepared = SorobanRpc.assembleTransaction(tx, simulated).build();
+  const prepared = rpc.assembleTransaction(tx, simulated).build();
 
   let signedXdr: string;
   try {
@@ -117,14 +117,14 @@ async function invokeContract(
 }
 
 async function pollForConfirmation(
-  server: SorobanRpc.Server,
+  server: rpc.Server,
   hash: string,
   attempts = 15,
   delayMs = 1500
-): Promise<SorobanRpc.Api.GetTransactionResponse> {
+): Promise<rpc.Api.GetTransactionResponse> {
   for (let i = 0; i < attempts; i++) {
     const response = await server.getTransaction(hash);
-    if (response.status !== SorobanRpc.Api.GetTransactionStatus.NOT_FOUND) {
+    if (response.status !== rpc.Api.GetTransactionStatus.NOT_FOUND) {
       return response;
     }
     await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -182,7 +182,7 @@ async function readContract(
 
   const simulated = await server.simulateTransaction(tx);
 
-  if (SorobanRpc.Api.isSimulationError(simulated)) {
+  if (rpc.Api.isSimulationError(simulated)) {
     throw new ContractCallError(
       `Could not read ${method} from the contract.`,
       simulated.error
