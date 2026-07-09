@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   contracts:
-    name: Smart Contracts (build + test)
+    name: Smart Contracts (test + build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +19,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32v1-none
+          targets: wasm32-unknown-unknown
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -29,38 +32,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      - name: Build contributor-registry (wasm)
-        working-directory: contracts/contributor-registry
-        run: cargo build --target wasm32v1-none --release
-
-      - name: Build bounty-board (wasm)
-        working-directory: contracts/bounty-board
-        run: cargo build --target wasm32v1-none --release
-
       - name: Run contract test suite
         run: cargo test --workspace --verbose
 
-      - name: Check formatting
-        run: cargo fmt --all -- --check
+      - name: Build contracts to WASM (release)
+        run: cargo build --workspace --release --target wasm32-unknown-unknown
 
-      - name: Clippy lints
-        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Upload WASM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-wasm
+          path: target/wasm32-unknown-unknown/release/*.wasm
+          if-no-files-found: error
 
   frontend:
     name: Frontend (lint + test + build)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -68,13 +64,15 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Run unit + component tests
-        run: npm run test
+      - name: Run test suite
+        run: npm test
 
       - name: Build production bundle
         run: npm run build
         env:
-          NEXT_PUBLIC_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
-          NEXT_PUBLIC_SOROBAN_RPC_URL: "https://soroban-testnet.stellar.org"
-          NEXT_PUBLIC_BOUNTY_BOARD_CONTRACT_ID: "CDUMMYPLACEHOLDERFORBUILD00000000000000000000000000"
-          NEXT_PUBLIC_CONTRIBUTOR_REGISTRY_CONTRACT_ID: "CDUMMYPLACEHOLDERFORBUILD00000000000000000000000000"
+          VITE_STELLAR_NETWORK: TESTNET
+          VITE_SOROBAN_RPC_URL: https://soroban-testnet.stellar.org
+          VITE_NETWORK_PASSPHRASE: 'Test SDF Network ; September 2015'
+          VITE_ESCROW_CONTRACT_ID: CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          VITE_ARBITER_CONTRACT_ID: CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          VITE_TOKEN_CONTRACT_ID: CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA

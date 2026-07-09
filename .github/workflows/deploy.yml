@@ -1,0 +1,108 @@
+name: Deploy Contracts to Testnet
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  deploy:
+    name: Deploy to Testnet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo registry and binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+            target
+          key: ${{ runner.os }}-cargo-deploy-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-deploy-
+            ${{ runner.os }}-cargo-
+
+      - name: Install cargo-binstall
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+
+      - name: Install Stellar CLI
+        run: cargo binstall --no-confirm stellar-cli
+
+      - name: Build contracts
+        run: |
+          cargo build --target wasm32-unknown-unknown --release
+          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/arbiter_contract.wasm
+          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/escrow_contract.wasm
+
+      - name: Deploy to Testnet
+        run: |
+          echo "Generating identities..."
+          stellar keys generate deployer --network testnet
+          stellar keys fund deployer --network testnet
+          
+          stellar keys generate freelancer --network testnet
+          stellar keys fund freelancer --network testnet
+
+          echo "Deploying Arbiter..."
+          ARBITER_ID=$(stellar contract deploy \
+            --wasm target/wasm32-unknown-unknown/release/arbiter_contract.optimized.wasm \
+            --source deployer \
+            --network testnet 2>deploy_err.log) || { cat deploy_err.log; exit 1; }
+          echo "Arbiter deployed at: $ARBITER_ID"
+          
+          echo "Initializing Arbiter..."
+          stellar contract invoke \
+            --id $ARBITER_ID \
+            --source deployer \
+            --network testnet \
+            -- init_arbiter --admin $(stellar keys address deployer)
+
+          echo "Deploying Escrow..."
+          ESCROW_ID=$(stellar contract deploy \
+            --wasm target/wasm32-unknown-unknown/release/escrow_contract.optimized.wasm \
+            --source deployer \
+            --network testnet 2>deploy_err.log) || { cat deploy_err.log; exit 1; }
+          echo "Escrow deployed at: $ESCROW_ID"
+
+          echo "Initializing Escrow..."
+          stellar contract invoke \
+            --id $ESCROW_ID \
+            --source deployer \
+            --network testnet \
+            -- initialize --arbiter_contract $ARBITER_ID
+
+          echo "Fetching Test Token (Native XLM asset) ID..."
+          TOKEN_ID=$(stellar contract id asset \
+            --asset native \
+            --network testnet)
+          echo "Token ID is: $TOKEN_ID"
+
+          echo "Creating a demo job (this will generate the transaction hash)..."
+          stellar contract invoke \
+            --id $ESCROW_ID \
+            --source deployer \
+            --network testnet \
+            -- create_job \
+            --client $(stellar keys address deployer) \
+            --freelancer $(stellar keys address freelancer) \
+            --token $TOKEN_ID \
+            --milestone_descriptions '["Design mockups","Build MVP"]' \
+            --milestone_amounts '["3000000000","7000000000"]'
+
+          echo "============================================="
+          echo "?? DEPLOYMENT SUCCESSFUL!"
+          echo "============================================="
+          echo "VITE_ESCROW_CONTRACT_ID=$ESCROW_ID"
+          echo "VITE_ARBITER_CONTRACT_ID=$ARBITER_ID"
+          echo "VITE_TOKEN_CONTRACT_ID=$TOKEN_ID"
+          echo "============================================="
+          echo "Check the step output above for the 'create_job' transaction hash!"

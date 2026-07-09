@@ -1,12 +1,12 @@
 [workspace]
 resolver = "2"
 members = [
-    "contracts/bounty-board",
-    "contracts/contributor-registry",
+    "contracts/escrow",
+    "contracts/arbiter",
 ]
 
 [workspace.dependencies]
-soroban-sdk = "21.7.6"
+soroban-sdk = "22.0.0"
 
 [profile.release]
 opt-level = "z"

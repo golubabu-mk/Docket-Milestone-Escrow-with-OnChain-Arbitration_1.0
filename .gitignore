@@ -1,18 +1,20 @@
-# Rust
-/target/
-Cargo.lock.bak
-**/*.rs.bk
+# Rust / Soroban
+/target
+**/target
 
-# Node / Next.js
-node_modules/
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/.env.local
-frontend/.env*.local
-frontend/next-env.d.ts
+# Node / frontend
+node_modules
+dist
+.env
+.env.local
+coverage
 
-# Misc
+# Editor / OS
 .DS_Store
+.vscode/*
+!.vscode/extensions.json
 *.log
-.vercel
+
+# Deployment artifacts (keep addresses in DEPLOYMENT.md / README instead)
+.soroban
+stellar
