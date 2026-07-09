@@ -40,11 +40,11 @@ export function BountyBoardGrid(props: BountyBoardGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div className="flex overflow-x-auto gap-5 pb-4 -mx-5 px-5 sm:mx-0 sm:px-0 snap-x snap-mandatory hide-scrollbar">
       {COLUMNS.map((col) => {
         const items = bounties.filter((b) => b.status === col.status);
         return (
-          <div key={col.status} className="min-w-0">
+          <div key={col.status} className="w-[85vw] sm:w-[280px] shrink-0 snap-start flex flex-col">
             <div className="flex items-baseline justify-between mb-3 px-1">
               <h2 className="font-display text-base">{col.label}</h2>
               <span className="text-[11px] font-mono text-ink-soft/50">
