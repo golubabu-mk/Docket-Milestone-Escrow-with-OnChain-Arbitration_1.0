@@ -158,7 +158,7 @@ async function readContract(
 ): Promise<unknown> {
   const server = getServer();
   const dummySource =
-    "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF";
+    "GA56UH3DNGGSGPPHY2ZSUBXIWLCY3J27AEFGOTH6K23LNQDPFY2GYHI7";
   let account;
   try {
     account = await server.getAccount(dummySource).catch(() => null);
